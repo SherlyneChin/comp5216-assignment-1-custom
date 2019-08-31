@@ -1,7 +1,9 @@
 package comp5216.sydney.edu.au.todolist;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -37,8 +39,23 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long rowId) {
                 Log.i("MainActivity","Long Clicked item"+ position);
-                arrayOfItems.remove(position);
-                itemAdapter.notifyDataSetChanged();
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setTitle(R.string.dialog_delete_title)
+                        .setMessage(R.string.dialog_delete_msg)
+                        .setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                arrayOfItems.remove(position);
+                                itemAdapter.notifyDataSetChanged();
+                            }
+                        })
+                        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                //
+                            }
+                        });
+                builder.create().show();
                 return true;
             }
         });
