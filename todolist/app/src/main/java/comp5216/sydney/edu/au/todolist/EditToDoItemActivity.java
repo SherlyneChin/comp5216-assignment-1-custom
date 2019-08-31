@@ -67,8 +67,8 @@ public class EditToDoItemActivity extends Activity
 				.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialogInterface, int i) {
-						Intent returnToMainActivityPage = new Intent(getApplicationContext(), MainActivity.class);
-						startActivity(returnToMainActivityPage);
+						setResult(RESULT_CANCELED);
+						finish();
 					}
 				})
 				.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {

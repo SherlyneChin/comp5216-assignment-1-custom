@@ -14,6 +14,11 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 import org.apache.commons.io.FileUtils;
@@ -36,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
         itemAdapter = new itemAdapter(this, arrayOfItems);
 
         ListView listView = (ListView) findViewById(R.id.lstView);
+        //readItemsFromFile();
         listView.setAdapter(itemAdapter);
         //listView.setOnItemClickListener((AdapterView.OnItemClickListener) this);
         setupListViewListener();
@@ -57,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 arrayOfItems.remove(position);
                                 itemAdapter.notifyDataSetChanged();
+                                //saveItemsToFile();
                             }
                         })
                         .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -84,6 +91,7 @@ public class MainActivity extends AppCompatActivity {
 
                     startActivityForResult(intent, EDIT_ITEM_REQUEST_CODE);
                     itemAdapter.notifyDataSetChanged();
+                    //saveItemsToFile();
                 }
             }
         });
@@ -101,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
 
                 Toast.makeText(this, "updated: "+ editedItem, Toast.LENGTH_SHORT).show();
                 itemAdapter.notifyDataSetChanged();
+                //saveItemsToFile();
             }
         } else if (requestCode == ADD_ITEM_REQUEST_CODE){
             if (resultCode == RESULT_OK) {
@@ -113,6 +122,7 @@ public class MainActivity extends AppCompatActivity {
 
                 Toast.makeText(this, "added: "+ editedItem, Toast.LENGTH_SHORT).show();
                 itemAdapter.notifyDataSetChanged();
+                //saveItemsToFile();
             }
         }
 
@@ -126,13 +136,50 @@ public class MainActivity extends AppCompatActivity {
         Intent goAddEditPage = new Intent(MainActivity.this, EditToDoItemActivity.class);
         startActivityForResult(goAddEditPage, ADD_ITEM_REQUEST_CODE);
         itemAdapter.notifyDataSetChanged();
+        //saveItemsToFile();
     }
 
 //    private void readItemsFromFile(){
+//        //arrayOfItems = new ArrayList<listItem>();
 //        File filesDir = getFilesDir();
 //
 //        File todoFile = new File(filesDir, "todo.txt");
 //
-//        if (!todoFile)
+//        if (!todoFile.exists()) {
+//            arrayOfItems = new ArrayList<listItem>();
+//        }else {
+//            try {
+//                //arrayOfItems = new ArrayList<listItem>(FileUtils.readLines(todoFile));
+//                FileInputStream fis = new FileInputStream(todoFile);
+//                ObjectInputStream ois = new ObjectInputStream(fis);
+//
+//                arrayOfItems = (ArrayList) ois.readObject();
+//
+//                ois.close();
+//                fis.close();
+//            }
+//            catch (IOException ex){
+//                arrayOfItems = new ArrayList<listItem>();
+//            } catch (ClassNotFoundException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//    }
+
+//    private void saveItemsToFile(){
+//        File filesDir = getFilesDir();
+//
+//        File todoFile = new File(filesDir,"todo.txt");
+//        try {
+//            //FileUtils.writeLines(todoFile,arrayOfItems);
+//            FileOutputStream fos = new FileOutputStream(todoFile);
+//            ObjectOutputStream oos = new ObjectOutputStream(fos);
+//            oos.writeObject(arrayOfItems);
+//            oos.close();
+//            fos.close();
+//        }
+//        catch (IOException ex) {
+//            ex.printStackTrace();
+//        }
 //    }
 }

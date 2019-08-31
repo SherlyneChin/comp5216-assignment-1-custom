@@ -1,10 +1,11 @@
 package comp5216.sydney.edu.au.todolist;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class listItem {
+public class listItem implements Serializable {
 
     private String title;
     private String dateTime;
