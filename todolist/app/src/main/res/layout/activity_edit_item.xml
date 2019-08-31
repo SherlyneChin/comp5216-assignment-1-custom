@@ -38,6 +38,7 @@
         android:layout_below="@+id/etEditItem"
         android:layout_alignRight="@+id/etEditItem"
         android:layout_marginTop="25dp"
+        android:onClick="onCancel"
         android:text="Cancel" />
 
 </RelativeLayout>

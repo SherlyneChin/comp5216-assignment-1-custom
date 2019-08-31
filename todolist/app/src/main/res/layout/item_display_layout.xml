@@ -8,8 +8,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="9dp"
-        android:layout_marginTop="9dp"
+        android:layout_marginStart="7dp"
+        android:layout_marginTop="26dp"
         android:text="@string/title"
         android:textSize="24sp" />
 
@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="43dp"
+        android:layout_marginStart="7dp"
+        android:layout_marginTop="8dp"
         android:text="@string/dateDisplay" />
 </RelativeLayout>

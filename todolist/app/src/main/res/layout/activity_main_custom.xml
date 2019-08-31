@@ -27,5 +27,6 @@
         android:layout_marginStart="161dp"
         android:layout_marginEnd="162dp"
         android:layout_marginBottom="18dp"
+        android:onClick="onAddItemClick"
         android:text="New" />
 </RelativeLayout>
