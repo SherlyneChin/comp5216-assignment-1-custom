@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">todolist</string>
+    <string name="title">Title</string>
+    <string name="dateDisplay">current/latest edited time</string>
 </resources>
