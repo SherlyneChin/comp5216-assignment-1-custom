@@ -22,6 +22,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import org.apache.commons.io.FileUtils;
 
@@ -40,10 +42,11 @@ public class MainActivity extends AppCompatActivity {
 
         arrayOfItems = listItem.getListItem();
 
-
-
         ListView listView = (ListView) findViewById(R.id.lstView);
         readItemsFromFile();
+        //arrayOfItems.sort(Comparator.comparing(listItem::getinDateFormat));
+        Collections.sort(arrayOfItems, Collections.reverseOrder());
+        //Collections.reverse(arrayOfItems);
         itemAdapter = new itemAdapter(this, arrayOfItems);
         listView.setAdapter(itemAdapter);
         //listView.setOnItemClickListener((AdapterView.OnItemClickListener) this);
@@ -66,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 arrayOfItems.remove(position);
                                 itemAdapter.notifyDataSetChanged();
+                                Collections.sort(arrayOfItems, Collections.reverseOrder());
                                 saveItemsToFile();
                             }
                         })
@@ -94,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
 
                     startActivityForResult(intent, EDIT_ITEM_REQUEST_CODE);
                     itemAdapter.notifyDataSetChanged();
+                    Collections.sort(arrayOfItems, Collections.reverseOrder());
                     saveItemsToFile();
                 }
             }
@@ -112,6 +117,7 @@ public class MainActivity extends AppCompatActivity {
 
                 Toast.makeText(this, "updated: "+ editedItem, Toast.LENGTH_SHORT).show();
                 itemAdapter.notifyDataSetChanged();
+                Collections.sort(arrayOfItems, Collections.reverseOrder());
                 saveItemsToFile();
             }
         } else if (requestCode == ADD_ITEM_REQUEST_CODE){
@@ -125,6 +131,7 @@ public class MainActivity extends AppCompatActivity {
 
                 Toast.makeText(this, "added: "+ editedItem, Toast.LENGTH_SHORT).show();
                 itemAdapter.notifyDataSetChanged();
+                Collections.sort(arrayOfItems, Collections.reverseOrder());
                 saveItemsToFile();
             }
         }
@@ -139,6 +146,7 @@ public class MainActivity extends AppCompatActivity {
         Intent goAddEditPage = new Intent(MainActivity.this, EditToDoItemActivity.class);
         startActivityForResult(goAddEditPage, ADD_ITEM_REQUEST_CODE);
         itemAdapter.notifyDataSetChanged();
+        Collections.sort(arrayOfItems, Collections.reverseOrder());
         saveItemsToFile();
     }
 
