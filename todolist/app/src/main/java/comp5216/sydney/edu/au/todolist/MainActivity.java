@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.SyncStateContract;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -23,9 +22,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 
-import org.apache.commons.io.FileUtils;
 
 public class MainActivity extends AppCompatActivity {
     private final int ADD_ITEM_REQUEST_CODE = 646;
@@ -44,24 +41,27 @@ public class MainActivity extends AppCompatActivity {
 
         ListView listView = (ListView) findViewById(R.id.lstView);
         readItemsFromFile();
-        //arrayOfItems.sort(Comparator.comparing(listItem::getinDateFormat));
+        //using Collection's sorting function to sort items in descending order
+        // (# comparator interface must be implemented in the class)
         Collections.sort(arrayOfItems, Collections.reverseOrder());
-        //Collections.reverse(arrayOfItems);
+        //setup ItemAdapter with the ArrayList of items and load items into the ListView container
         itemAdapter = new itemAdapter(this, arrayOfItems);
         listView.setAdapter(itemAdapter);
-        //listView.setOnItemClickListener((AdapterView.OnItemClickListener) this);
+
         setupListViewListener();
     }
 
 
 
     private void setupListViewListener(){
+
         ListView listView = (ListView) findViewById(R.id.lstView);
+        //long click listener
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long rowId) {
                 Log.i("MainActivity","Long Clicked item"+ position);
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this); //initiate a dialog box
                 builder.setTitle(R.string.dialog_delete_title)
                         .setMessage(R.string.dialog_delete_msg)
                         .setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
@@ -105,6 +105,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    //follow up on startActivityFor Result
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
         if (requestCode == EDIT_ITEM_REQUEST_CODE){
             if (resultCode == RESULT_OK) {
@@ -115,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
                 arrayOfItems.set(position, listItem);
                 Log.i("Updated Item in list: ", editedItem + ",position: "+position);
 
-                Toast.makeText(this, "updated: "+ editedItem, Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "updated: "+ editedItem, Toast.LENGTH_SHORT).show(); //little notice box appears and disappear after sometime
                 itemAdapter.notifyDataSetChanged();
                 Collections.sort(arrayOfItems, Collections.reverseOrder());
                 saveItemsToFile();
@@ -140,9 +141,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onAddItemClick(View view) {
-        //Intent intent = new Intent(MainActivity.this, EditToDoItemActivity.class);
-        //Intent goAddEditPage = new Intent(getApplicationContext(), EditToDoItemActivity.class);
-        //startActivity(goAddEditPage);
+
         Intent goAddEditPage = new Intent(MainActivity.this, EditToDoItemActivity.class);
         startActivityForResult(goAddEditPage, ADD_ITEM_REQUEST_CODE);
         itemAdapter.notifyDataSetChanged();
@@ -151,17 +150,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void readItemsFromFile(){
-        //arrayOfItems = new ArrayList<listItem>();
-        //File filesDir = getFilesDir();
-        //File file = new File(context.getFilesDir(), filename);
+
         File file = new File(getFilesDir(),"todoFile");
         //File todoFile = new File(filesDir, "todo.txt");
 
-//        if (!todoFile.exists()) {
-//            arrayOfItems = new ArrayList<listItem>();
-//        }else {
+        if (!file.exists()) {
+            arrayOfItems = new ArrayList<listItem>();
+        }else {
             try {
-                //arrayOfItems = new ArrayList<listItem>(FileUtils.readLines(todoFile));
+
                 FileInputStream fis = new FileInputStream(file);
                 ObjectInputStream ois = new ObjectInputStream(fis);
 
@@ -181,34 +178,14 @@ public class MainActivity extends AppCompatActivity {
             }
 
 
-//        }
-    }
-
-    public void saveItemsToFile2(Context ctx) {
-        FileOutputStream fos;
-            try {
-             fos = ctx.openFileOutput("todoFile", Context.MODE_PRIVATE);
-            ObjectOutputStream of = new ObjectOutputStream(fos);
-            of.writeObject(arrayOfItems);
-            of.flush();
-            of.close();
-            fos.close();
-        }
-        catch (Exception e) {
-            Log.e("InternalStorage", e.getMessage());
         }
     }
 
     private void saveItemsToFile(){
-        //File filesDir = getFilesDir();
 
-        //File todoFile = new File(filesDir,"todo.txt");
-       //FileOutputStream fos = context.openFileOutput()
         File file = new File(getFilesDir(),"todoFile");
         try {
-            //FileUtils.writeLines(todoFile,arrayOfItems);
-            //fos = openFileOutput(SyncStateContract.Constants., Context.MODE_PRIVATE);
-            //FileOutputStream fos = openFileOutput("todoFile", Context.MODE_PRIVATE);
+
             FileOutputStream fos = new FileOutputStream(file);
             ObjectOutputStream oos = new ObjectOutputStream(fos);
             oos.writeObject(arrayOfItems);
