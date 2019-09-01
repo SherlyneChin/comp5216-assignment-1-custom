@@ -3,9 +3,11 @@ package comp5216.sydney.edu.au.todolist;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.SyncStateContract;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -38,10 +40,11 @@ public class MainActivity extends AppCompatActivity {
 
         arrayOfItems = listItem.getListItem();
 
-        itemAdapter = new itemAdapter(this, arrayOfItems);
+
 
         ListView listView = (ListView) findViewById(R.id.lstView);
-        //readItemsFromFile();
+        readItemsFromFile();
+        itemAdapter = new itemAdapter(this, arrayOfItems);
         listView.setAdapter(itemAdapter);
         //listView.setOnItemClickListener((AdapterView.OnItemClickListener) this);
         setupListViewListener();
@@ -63,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 arrayOfItems.remove(position);
                                 itemAdapter.notifyDataSetChanged();
-                                //saveItemsToFile();
+                                saveItemsToFile();
                             }
                         })
                         .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -91,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
 
                     startActivityForResult(intent, EDIT_ITEM_REQUEST_CODE);
                     itemAdapter.notifyDataSetChanged();
-                    //saveItemsToFile();
+                    saveItemsToFile();
                 }
             }
         });
@@ -109,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
 
                 Toast.makeText(this, "updated: "+ editedItem, Toast.LENGTH_SHORT).show();
                 itemAdapter.notifyDataSetChanged();
-                //saveItemsToFile();
+                saveItemsToFile();
             }
         } else if (requestCode == ADD_ITEM_REQUEST_CODE){
             if (resultCode == RESULT_OK) {
@@ -122,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
 
                 Toast.makeText(this, "added: "+ editedItem, Toast.LENGTH_SHORT).show();
                 itemAdapter.notifyDataSetChanged();
-                //saveItemsToFile();
+                saveItemsToFile();
             }
         }
 
@@ -136,50 +139,76 @@ public class MainActivity extends AppCompatActivity {
         Intent goAddEditPage = new Intent(MainActivity.this, EditToDoItemActivity.class);
         startActivityForResult(goAddEditPage, ADD_ITEM_REQUEST_CODE);
         itemAdapter.notifyDataSetChanged();
-        //saveItemsToFile();
+        saveItemsToFile();
     }
 
-//    private void readItemsFromFile(){
-//        //arrayOfItems = new ArrayList<listItem>();
-//        File filesDir = getFilesDir();
-//
-//        File todoFile = new File(filesDir, "todo.txt");
-//
+    private void readItemsFromFile(){
+        //arrayOfItems = new ArrayList<listItem>();
+        //File filesDir = getFilesDir();
+        //File file = new File(context.getFilesDir(), filename);
+        File file = new File(getFilesDir(),"todoFile");
+        //File todoFile = new File(filesDir, "todo.txt");
+
 //        if (!todoFile.exists()) {
 //            arrayOfItems = new ArrayList<listItem>();
 //        }else {
-//            try {
-//                //arrayOfItems = new ArrayList<listItem>(FileUtils.readLines(todoFile));
-//                FileInputStream fis = new FileInputStream(todoFile);
-//                ObjectInputStream ois = new ObjectInputStream(fis);
-//
-//                arrayOfItems = (ArrayList) ois.readObject();
-//
-//                ois.close();
-//                fis.close();
-//            }
-//            catch (IOException ex){
-//                arrayOfItems = new ArrayList<listItem>();
-//            } catch (ClassNotFoundException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//    }
+            try {
+                //arrayOfItems = new ArrayList<listItem>(FileUtils.readLines(todoFile));
+                FileInputStream fis = new FileInputStream(file);
+                ObjectInputStream ois = new ObjectInputStream(fis);
 
-//    private void saveItemsToFile(){
-//        File filesDir = getFilesDir();
-//
-//        File todoFile = new File(filesDir,"todo.txt");
-//        try {
-//            //FileUtils.writeLines(todoFile,arrayOfItems);
-//            FileOutputStream fos = new FileOutputStream(todoFile);
-//            ObjectOutputStream oos = new ObjectOutputStream(fos);
-//            oos.writeObject(arrayOfItems);
-//            oos.close();
-//            fos.close();
+                arrayOfItems = (ArrayList) ois.readObject();
+
+                ois.close();
+                fis.close();
+
+                for (listItem item : arrayOfItems){
+                    Log.i("Reading", item.getTitle());
+                }
+            }
+            catch (IOException ex){
+                arrayOfItems = new ArrayList<listItem>();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+
+
 //        }
-//        catch (IOException ex) {
-//            ex.printStackTrace();
-//        }
-//    }
+    }
+
+    public void saveItemsToFile2(Context ctx) {
+        FileOutputStream fos;
+            try {
+             fos = ctx.openFileOutput("todoFile", Context.MODE_PRIVATE);
+            ObjectOutputStream of = new ObjectOutputStream(fos);
+            of.writeObject(arrayOfItems);
+            of.flush();
+            of.close();
+            fos.close();
+        }
+        catch (Exception e) {
+            Log.e("InternalStorage", e.getMessage());
+        }
+    }
+
+    private void saveItemsToFile(){
+        //File filesDir = getFilesDir();
+
+        //File todoFile = new File(filesDir,"todo.txt");
+       //FileOutputStream fos = context.openFileOutput()
+        File file = new File(getFilesDir(),"todoFile");
+        try {
+            //FileUtils.writeLines(todoFile,arrayOfItems);
+            //fos = openFileOutput(SyncStateContract.Constants., Context.MODE_PRIVATE);
+            //FileOutputStream fos = openFileOutput("todoFile", Context.MODE_PRIVATE);
+            FileOutputStream fos = new FileOutputStream(file);
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(arrayOfItems);
+            oos.close();
+            fos.close();
+        }
+        catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
 }
